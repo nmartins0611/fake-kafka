@@ -1,0 +1,34 @@
+## Basic edit on hosts file 
+
+---
+- name: Checking platform
+  hosts: localhost
+  gather_facts: false
+  tasks:
+ 
+## create dodge entry 
+
+   - name: add dodge entry
+     ansible.builtin.lineinfile:
+      path: /etc/hosts
+      line: 10.9.1.106 jhb-kiosk
+      owner: root
+      group: root
+      mode: '0644'
+     tags: 
+      - setup
+      - never
+
+## Add some trouble shooting bits
+
+
+   - name: correct dns records
+     ansible.builtin.lineinfile:
+      path: /etc/hosts
+      regexp: '^10\.9\.1\.106'
+      line: ''
+      owner: root
+      group: root
+      mode: '0644'
+      
+## Add Handler bits 
