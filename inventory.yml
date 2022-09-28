@@ -1,0 +1,11 @@
+all:
+  children:
+    appnodes:
+      hosts:
+        dublin-kiosk:
+          ansible_password: redhat
+          ansible_user: rhel
+        jhb-kiosk:
+          ansible_password: redhat
+          ansible_user: rhel
+    ungrouped: {}
