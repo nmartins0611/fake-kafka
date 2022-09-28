@@ -2,8 +2,13 @@
 
 ---
 - name: Checking platform
-  hosts: localhost
+  hosts: appnodes
   gather_facts: false
+  remote_user: rhel
+  become: true
+#  become_method: su
+#  become_user: root
+
   tasks:
  
 ## create dodge entry 
@@ -21,7 +26,7 @@
 
 ## Add some trouble shooting bits
    - name: troubleshooting connectivity 
-     ignore_errors: yes
+    # ignore_errors: yes
      block:
 
       - name: checking connectivity to dublin-kiosk
@@ -34,41 +39,58 @@
 
       - name: connectivity results to node 1 ipv4
         debug:
-         msg: Pinging dublin {{ dublin }}
+         msg: PING IP DUBLIN NODE {{ dublin }}
 
       - name: connectivity result to node 2 ipv4
         debug:
-         msg: Pinging dublin {{ jhb }}
+         msg: PING IP JHB NODE {{ jhb }}
 
       - name: checking DNS resolution to dublin-kiosk
         shell: ping -c 1 -q dublin-kiosk
-        register: dublin
+        register: dnsdublin
 
       - name: checking DNS resolution to jhb-kiosk
         shell: ping -c 1 -q jhb-kiosk
-        register: jhb
+        register: dnsjhb
 
-      - name: connectivity results to node 1
+      - name: DNS results to node 1
         debug:
-         msg: Pinging dublin {{ dublin }}
+         msg: DUBLIN RESOLUTION {{ dnsdublin }}
 
-      - name: connectivity result to node 2s
+      - name: DNS result to node 2s
         debug:
-         msg: Pinging dublin {{ jhb }}
+         msg: JHB RESOLUTION {{ dnsjhb }}
 
-   #   - name: recording failures or failed tasks
-   #     set_fact: 
-   #      dns_error: 1
-   #      ip_error: 0
-   #     when: "'FAILED' "
- 
-   - name: correct dns records
-     ansible.builtin.lineinfile:
-      path: /etc/hosts
-      regexp: '^10\.9\.1\.106'
-      line: ''
-      owner: root
-      group: root
-      mode: '0644'
-      
+     rescue:
+
+      - name: error on network
+        block:
+          - name: DNS error 
+            debug: 
+              msg: node connectivity not established
+
+          - name: correct record dns drift 
+            ansible.builtin.lineinfile:
+             path: /etc/hosts
+             regexp: '^10\.9\.1\.106'
+             line: ''
+             owner: root
+             group: root
+             mode: '0644'
+   
+          - name: network test
+            shell: ping -c 1 -q dublin-kiosk && ping -c 1 -q jhb-kiosk
+            register: ping
+
+        notify: result
+
+  handlers:
+
+   - name: result
+     debug:
+      msg: connection successfull {{ ping }}
+   
+
+
+
 ## Add Handler bits 
