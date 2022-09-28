@@ -56,11 +56,11 @@
         debug:
          msg: Pinging dublin {{ jhb }}
 
-      - name: recording failures or failed tasks
-        set_fact: 
-         dns_error: 1
-         ip_error: 0
-        when: "'FAILED' in command_result.stderr"
+   #   - name: recording failures or failed tasks
+   #     set_fact: 
+   #      dns_error: 1
+   #      ip_error: 0
+   #     when: "'FAILED' "
  
    - name: correct dns records
      ansible.builtin.lineinfile:
