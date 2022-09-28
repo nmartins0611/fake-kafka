@@ -15,7 +15,7 @@
 {"message":"Application node offline: JHB-Kiosk"}
 {"message":"Error application is down on node: JHB-Kiosk"}
 {"message":"Error application is down on node: JHB-Kiosk"}
-{"message":"Fatal: JHB-Kiosk unreachable"}
+{"message":"Fatal host unreachable"}
 {"message":"Application degraded"}
 {"message":"Application degraded"}
 {"message":"Application running successfully on node: Dublin-Kiosk"}
